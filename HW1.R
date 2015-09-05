@@ -62,7 +62,49 @@ A = rbind(c(.6,.4), c(.2,.8))
 print(A)
 
 #Q3b
+matrixExponentiation = function(A, power){
+  decomp = eigen(A)
+  V = decomp$vectors
+  Vinv = solve(V)
+  D = diag(decomp$values^power)
+  return(V%*%(D)%*%Vinv)
+}
 A = rbind(c(.6,.4), c(.2,.8))
-V = eigen(A)$vectors
-Vinv = solve(V)
+#A^2
+matrixExponentiation(A, 2)
+#       [,1] [,2]
+# [1,] 0.44 0.56
+# [2,] 0.28 0.72
 
+#A^20
+matrixExponentiation(A, 20)
+#           [,1]      [,2]
+# [1,] 0.3333333 0.6666667
+# [2,] 0.3333333 0.6666667
+
+#A^100
+matrixExponentiation(A, 100)
+#           [,1]      [,2]
+# [1,] 0.3333333 0.6666667
+# [2,] 0.3333333 0.6666667
+
+#Q3c - A^1000000
+matrixExponentiation(A, 1000000)
+#          [,1]      [,2]
+# [1,] 0.3333333 0.6666667
+# [2,] 0.3333333 0.6666667
+matrix(c(1/3, 1/3, 2/3, 2/3), nrow=2, ncol=2)
+#          [,1]      [,2]
+# [1,] 0.3333333 0.6666667
+# [2,] 0.3333333 0.6666667
+
+#Q3d
+initDistr = c(.25, .75)
+stableMatrix = matrix(c(1/3, 1/3, 2/3, 2/3), nrow=2, ncol=2)
+initDistr %*% stableMatrix
+#          [,1]      [,2]
+#[1,] 0.1733333 0.3466667
+matrix(c(13/75, 26/75), nrow=1)
+initDistr %*% stableMatrix
+#          [,1]      [,2]
+#[1,] 0.1733333 0.3466667
