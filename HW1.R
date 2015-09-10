@@ -1,16 +1,16 @@
+#Author: Jordan Poles
 #PROBLEM 1
 A = c(1,4,7,2,5,8,3,6,9)
 dim(A) = c(3,3)
 B = c(2,1,0,1,1,1,1,0,2)
 dim(B) = c(3,3)
 #Q1a1
-A*B
+A%*%B
 #Q1a1 Solution
-#      [,1] [,2] [,3]
-#[1,]    2    2    3
-#[2,]    4    5    0
-#[3,]    0    8   18
-
+# #     [,1] [,2] [,3]
+# [1,]    4    6    7
+# [2,]   13   15   16
+# [3,]   22   24   25
 #Q1a2
 solve(B)
 #Q1a2 Solution
@@ -36,7 +36,7 @@ A[,-2]
 B[-3,-3]
 
 #Q1c2
-sum(A[2,] %*% B[,2])
+A[2,] %*% B[,2]
 #Q1c2 Solution = 15
 
 #PROBLEM 2
@@ -103,8 +103,7 @@ initDistr = c(.25, .75)
 stableMatrix = matrix(c(1/3, 1/3, 2/3, 2/3), nrow=2, ncol=2)
 initDistr %*% stableMatrix
 #          [,1]      [,2]
-#[1,] 0.1733333 0.3466667
-matrix(c(13/75, 26/75), nrow=1)
-initDistr %*% stableMatrix
+# [1,] 0.3333333 0.6666667
+matrix(c(1/3, 2/3), nrow=1)
 #          [,1]      [,2]
-#[1,] 0.1733333 0.3466667
+# [1,] 0.3333333 0.6666667
