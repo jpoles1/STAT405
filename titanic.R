@@ -1,14 +1,19 @@
 library(caret)
-require(randomForest)
 library(doMC)
+library(plyr)
 registerDoMC(cores = 8)
-traindata = read.csv("titanictrain.csv")
-traindata$Cabin = NULL
-traindata$Ticket = NULL
-traindata$Name = NULL
-traindata$Survived = as.factor(traindata$Survived)
-traindata = traindata[complete.cases(traindata),]
-
+#Fetch Raw Data 
+rawdata = read.csv("titanictrain.csv")
+#Preprocess Data
+rawdata$Cabin = NULL
+rawdata$Ticket = NULL
+rawdata$Name = NULL
+rawdata$Survived = as.factor(rawdata$Survived)
+rawdata = rawdata[complete.cases(rawdata),]
+#Split Data
+inValid = createDataPartition(rawdata$Survived, p=0.4, list=FALSE)
+validdata = rawdata[inValid,]
+traindata = rawdata[-inValid,]
 #Data Exploration
 predictors = traindata[,3:9]
 survival = traindata[,2]
@@ -21,7 +26,14 @@ plot(predictors$Fare, survival)
 #predict(dummies, newdata=traindata)
 
 #Random Forest
-forest = train(Survived~., data=traindata, method="rf", prox=TRUE, preProcess = c("BoxCox", "knnImpute"))
+forest = train(Survived~., data=traindata, method="rf", prox=TRUE, preProcess = c("BoxCox"))
+#Boosting
+booster = train(Survived~., data=traindata, method="gbm", prox=TRUE, preProcess = c("BoxCox"))
+#Validation
+predictions = predict(forest, validdata);
+validation = cbind(validdata, data.frame(pred1=predictions, truth=predictions==validdata$Survived))
+confusionmatrix = table(validation$Survived, validation$pred1)
+cat("Accuracy:", 100*sum(diag(confusionmatrix))/sum(confusionmatrix), "%")
 #Testing
 testdata = read.csv("titanictest.csv")
 testdata$Name = NULL
