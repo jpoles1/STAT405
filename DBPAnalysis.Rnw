@@ -1,0 +1,29 @@
+\documentclass{article}
+\begin{document}
+\section*{Import Data}
+<<dataimport, echo=TRUE>>=
+library(caret)
+rawdata = read.csv("DBP.csv")
+head(rawdata)
+@
+\section*{Baseline DBP By Treatment}
+<<baseline>>=
+cat("T Test P Value =", t.test(DBP1~TRT, data=rawdata)$p.value)
+cat("Wilcox Test P Value =", wilcox.test(DBP1~TRT, data=rawdata)$p.value)
+ggplot(data=rawdata, aes(x=TRT, y=DBP1))+geom_boxplot()
+@
+\section*{Final DBP By Treatment}
+<<final>>=
+t.test(DBP5~TRT, data=rawdata)
+ggplot(data=rawdata, aes(x=TRT, y=DBP5))+geom_boxplot()
+@
+\newpage
+\section*{Examining Trends in DBP Treatment}
+<<trendanalysis>>=
+differences = data.frame(rawdata$DBP2-rawdata$DBP1, rawdata$DBP3-rawdata$DBP2, rawdata$DBP4-rawdata$DBP3, rawdata$DBP5-rawdata$DBP4)
+rawdata[,"trendmeans"] = rowMeans(differences)
+t.test(trendmeans~TRT, data=rawdata)
+ggplot(data=rawdata, aes(x=TRT, y=trendmeans))+geom_boxplot()
+@
+
+\end{document}
