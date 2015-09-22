@@ -1,77 +1,88 @@
 \documentclass{article}
 \begin{document}
 \section*{Problem 1}
-\textbf{1.1ai)}
+\subsection*{1.1ai)}
 <<1.1ai>>=
 pbinom(10, size=12, prob=1/6)-pbinom(4, size=12, prob=1/6)
 @
-\textbf{1.1aii)}
+\subsection*{1.1aii)}
 <<1.1aii>>=
 pbinom(6, size=12, prob=1/6)-pbinom(2, size=12, prob=1/6)
 @
-\textbf{1.1aiii)}
+\subsection*{1.1aiii)}
 <<1.1aiii>>=
 pbinom(10, size=12, prob=1/6)
 @
-\textbf{1.1aiv)}
+\subsection*{1.1aiv)}
 <<1.1aiv>>=
 pbinom(8, size=12, prob=1/6, lower.tail=FALSE)
 @
-\textbf{1.1b)}
+\subsection*{1.1b)}
 <<1.1b, fig.width=3, fig.height=3>>=
 plot(pbinom(1:12, 12, 1/6), xlab="Number of Fives", ylab="Probability")
 @
 \newpage
 \section*{Problem 2}
-\textbf{2.1a)}
+\subsection*{2.1a)}
 <<2.1a>>=
 pnorm(95, mean=73, sd=8)-pnorm(60, mean=73, sd=8)
 @
-\textbf{2.1b)}
+\subsection*{2.1b)}
 <<2.1b>>=
 qnorm(.99, mean=73, sd=8)
 @
-\textbf{2.1c)}
+\subsection*{2.1c)}
 <<2.1c>>=
 qnorm(.95, mean=73, sd=8)
 @
-\textbf{2.2a)}
+\subsection*{2.2a)}
 <<2.2a>>=
 pnorm(2.54, lower.tail=FALSE)
 @
-\textbf{2.2b)}
+\subsection*{2.2b)}
 <<2.2b>>=
 pnorm(.72)-pnorm(0)
 @
-\textbf{2.2c)}
+\subsection*{2.2c)}
 <<2.2c>>=
 pnorm(1.25, lower.tail=FALSE)+pnorm(-1.25, lower.tail=TRUE)
 @
-\textbf{2.3a)} This variable follow a t-distribution?
-\textbf{2.3b)}
-<<>>=
+\subsection*{2.3a)} 
+Because the sample size is rather small, this variable follows a T distribution.
+\linebreak
+\subsection*{2.3b)}
+<<fig.height=3, fig.width=3>>=
+n = 24
+df = n-1
+t = (42 - 32)/(44 / sqrt(24))
+pt(t, df, lower.tail=FALSE)
+@
+\subsection*{2.3c)}
+<<fig.height=3, fig.width=3>>=
+xvals = seq(-5, 5, length.out = 800)
+plot(xvals, dt(xvals, df))
 @
 \newpage
 \section*{Problem 3}
-\textbf{3.3a)}
+\subsection*{3.3a)}
 <<3a, fig.width=4, fig.height=4>>=
 xval = seq(0, 1, length=100)
 plot(xval, dnorm(xval, .5, .08))
 @
 \newpage
-\textbf{3.3b)}
+\subsection*{3.3b)}
 <<3b, fig.width=4, fig.height=4>>=
 xval = seq(0, 1, length=100)
 plot(xval, dexp(xval, 5))
 @
 \newpage
-\textbf{3.3c)}
+\subsection*{3.3c)}
 <<3c, fig.width=4, fig.height=4>>=
 xval = seq(0, 1, length=100)
 plot(xval, dbeta(xval, 2,4))
 @
 \newpage
-\textbf{3.3d)}
+\subsection*{3.3d)}
 <<3d, fig.width=4, fig.height=4>>=
 xval = seq(0, 1.5, length=100)
 plot(xval, dgamma(xval, 2,5))
