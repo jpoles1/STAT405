@@ -3,23 +3,23 @@
 \section*{Problem 1}
 \subsection*{1.1ai)}
 <<1.1ai>>=
-pbinom(10, size=12, prob=1/6)-pbinom(4, size=12, prob=1/6)
+pbinom(10, size=13, prob=1/6)-pbinom(4, size=13, prob=1/6)
 @
 \subsection*{1.1aii)}
 <<1.1aii>>=
-pbinom(6, size=12, prob=1/6)-pbinom(2, size=12, prob=1/6)
+pbinom(6, size=13, prob=1/6)-pbinom(2, size=13, prob=1/6)
 @
 \subsection*{1.1aiii)}
 <<1.1aiii>>=
-pbinom(10, size=12, prob=1/6)
+pbinom(10, size=13, prob=1/6)
 @
 \subsection*{1.1aiv)}
 <<1.1aiv>>=
-pbinom(8, size=12, prob=1/6, lower.tail=FALSE)
+pbinom(8, size=13, prob=1/6, lower.tail=FALSE)
 @
 \subsection*{1.1b)}
 <<1.1b, fig.width=3, fig.height=3>>=
-plot(pbinom(1:12, 12, 1/6), xlab="Number of Fives", ylab="Probability")
+plot(pbinom(1:13, 13, 1/6), xlab="Number of Fives", ylab="Probability")
 @
 \newpage
 \section*{Problem 2}
