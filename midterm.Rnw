@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\begin{document}
+
+\section*{Part 1}
+\subsection*{Problem 1}
+<<>>==
+  A = rep(1:4, 4)
+  dim(A) = c(4,4)
+  A
+  B = cbind(c(2,-1,0),c(-1, 2, -1),c(0,0,2))
+  B
+@
+\subsubsection*{Q1}
+<<>>==
+  diag(B)
+@
+\subsubsection*{Q2}
+<<>>==
+  apply(B, 1, mean)
+@
+\subsubsection*{Q3}
+Not a real matrix; DNE;
+<<>>==
+  sqrt(B)
+@
+\subsubsection*{Q4}
+<<>>==
+  row = A[3,]
+  col = A[,3]
+  row %*% col
+@
+\subsubsection*{Q5}
+<<>>==
+  A[,c(1,4)]
+@
+\subsubsection*{Q6}
+<<>>==
+  matrixExponentiation = function(A, power){
+    decomp = eigen(A)
+    V = decomp$vectors
+    Vinv = solve(V)
+    D = diag(decomp$values^power)
+    return(V%*%(D)%*%Vinv)
+  }
+  matrixExponentiation(B, 6)
+@
+\subsubsection*{Q7}
+<<>>==
+    apply(A, 2, mean)
+@
+\subsubsection*{Q8}
+<<>>==
+  A[1,] %*% A[3,]
+  A[3,] %*% A[4,]
+  sum(A[1,] %*% A[3,], A[3,] %*% A[4,])
+@
+\subsubsection*{Q9}
+<<>>==
+  row = A[1,]
+  col = A[,3]
+  row * col
+@
+\subsubsection*{Q10}
+<<>>==
+  indexcomb = expand.grid(1:4, 1:4)
+  indexcomb["sums"] = rowSums(indexcomb)
+  even = function(x){return(x%%2 == 0);}
+  evens = apply(indexcomb["sums"], 1, even)
+  indexcomb["evens"] = evens;
+  indexcomb["Avals"] = as.vector(A)
+  indexcomb
+  A[as.vector(evens)]
+@
+\subsection*{Problem 2}
+<<>>==
+  x = seq(0, 1, length.out = 100)
+  dists = data.frame(
+    x=x, 
+    Normal=dnorm(x, mean=0, sd=.5)
+    
+  );
+@
+\end{document}
