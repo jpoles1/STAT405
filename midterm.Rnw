@@ -1,7 +1,11 @@
 \documentclass{article}
 
 \begin{document}
-
+%\SweaveOpts{concordance=FALSE}
+<<init, echo=FALSE>>=
+  require(ggplot2);
+  require(reshape2);
+@
 \section*{Part 1}
 \subsection*{Problem 1}
 <<>>==
@@ -77,8 +81,39 @@ Not a real matrix; DNE;
   x = seq(0, 1, length.out = 100)
   dists = data.frame(
     x=x, 
-    Normal=dnorm(x, mean=0, sd=.5)
-    
+    Normal=dnorm(x, mean=0, sd=.05),
+    Exponential=dexp(x, 4),
+    Beta=dbeta(x, 2,4),
+    Gamma=dgamma(x,3,6)
   );
+  colnames(dists) = c("x", "Normal(0,.05)", "Exp(4)", "Beta(2,4)", "Gamma(3,6)");
+  meltdists = melt(dists, id.vars = x);
+  colnames(meltdists) = c("x", "Distribution", "value")
+  plot = ggplot(data=meltdists, aes(x=x, y=value, color=Distribution))+geom_line()
+  plot = plot+xlim(0,1)+ylim(0,5)
+  plot+xlab("X-Value")+ylab("Probability")+ggtitle("Density Plots of Various Probability Distributions\n")
+@
+\section*{Part 2}
+\subsection*{Problem 1}
+<<>>=
+  size = 1000
+  parens = function(size){
+    vals = 1:size;
+    sum = 0;
+    for(val in vals){
+      sum = sum + (val*(val+val));
+    }
+    print(sum);
+  }
+  brackets = function(size){
+    vals = 1:size;
+    sum = 0;
+    for(val in vals){
+      sum = sum + {val*{val+val}};
+    }
+    print(sum);
+  }
+  system.time(parens(size));
+  system.time(brackets(size));
 @
 \end{document}
