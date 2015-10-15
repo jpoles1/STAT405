@@ -9,6 +9,7 @@
 <<init, echo=FALSE>>=
   require(ggplot2);
   require(reshape2);
+  require(microbenchmark);
 @
 \section*{Part 1}
 \subsection*{Problem 1}
@@ -119,7 +120,8 @@ Not a real matrix; DNE;
   }
   speeds = cbind(0:(length(parenfuncs)-1), speeds);
   colnames(speeds) = c("numparens", "time")
-  ggplot(data=speeds, aes(x=numparens, y=time))+geom_line();
+  speeds
+  ggplot(data=speeds, aes(x=numparens, y=time))+geom_line()+ggtitle("Excess parenthesis increase runtime\n");
 @
 \newpage
 \subsubsection*{Order of Operations}
@@ -149,6 +151,12 @@ Examining the difference between the two functions (using T-test and plotting)
   speedframe = cbind(speedframe, parenspeeds, bracketspeeds);
   speedmelt = melt(speedframe, id.vars="size");
   ggplot(data=speedmelt, aes(x=size, y=value, color=variable))+geom_line()
+@
+This problem may also be examined using the microbenchmark R package.
+<<>>=
+  bench = microbenchmark(parens(), brackets());
+  boxplot(bench);
+  autoplot(bench);
 @
 \newpage
 \subsubsection*{Exponentiation}
