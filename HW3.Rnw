@@ -1,0 +1,50 @@
+\documentclass[12pt]{article}
+\usepackage[left=1cm,right=1cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{amsmath}
+\begin{document}
+\title{STAT 405 Midterm Exam}
+\author{Jordan Poles}
+\maketitle
+<<init, echo=FALSE>>==
+  library(ggplot2)
+  require(reshape2);
+@
+\section*{Problem 1}
+<<>>==
+  x = seq(0, 1, length.out = 100)
+  dists = data.frame(
+    x=x, 
+    Normal=dnorm(x, mean=0, sd=.05),
+    Exponential=dexp(x, 4),
+    Beta=dbeta(x, 2,4),
+    Gamma=dgamma(x,3,6)
+  );
+  colnames(dists) = c("x", "Normal(0,.05)", "Exp(4)", "Beta(2,4)", "Gamma(3,6)");
+  meltdists = melt(dists, id.vars = x);
+  colnames(meltdists) = c("x", "Distribution", "value")
+  plot = ggplot(data=meltdists, aes(x=x, y=value, color=Distribution))+geom_line()
+  plot = plot+xlim(0,1)+ylim(0,5)
+  plot+xlab("X-Value")+ylab("Probability")+ggtitle("Density Plots of Various Probability Distributions\n")
+@
+\newpage
+\section*{Problem 2}
+<<>>==
+  head(mpg)
+  str(mpg)
+  mpg["id"] = rownames(mpg)
+@
+\newpage
+<<out.width="4in", out.height="4in">>==
+ mileageplot=ggplot(data=mpg, aes(x=cty, y=hwy))
+ mileageplot=mileageplot+geom_point()+geom_smooth(method = lm)
+ mileageplot = mileageplot+xlab("City Mileage")+ylab("Highway Mileage")
+ mileageplot+ggtitle("Highway Mileage Corresponds well with City Mileage")
+@
+\newpage
+<<out.width="4in", out.height="4in">>==
+  par(mfrow=2)
+  plotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="id")
+  ggplot(plotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)
+  ggplot(plotdat)+geom_histogram(aes(x=value, fill=variable, alpha=.6))
+@
+\end{document}
