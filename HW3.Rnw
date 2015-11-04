@@ -1,16 +1,18 @@
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
 \usepackage[left=1cm,right=1cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{amsmath}
 \begin{document}
-\title{STAT 405 Midterm Exam}
+\title{STAT 405 HW 3}
 \author{Jordan Poles}
 \maketitle
+%\SweaveOpts{concordance=FALSE}
 <<init, echo=FALSE>>==
-  library(ggplot2)
-  require(reshape2);
+  library(ggplot2);
+  library(grid);
+  library(reshape2);
 @
 \section*{Problem 1}
-<<>>==
+<<tidy=TRUE, fig.width=12, fig.height=8, out.width="6in", out.height="4in">>==
   x = seq(0, 1, length.out = 100)
   dists = data.frame(
     x=x, 
@@ -22,29 +24,36 @@
   colnames(dists) = c("x", "Normal(0,.05)", "Exp(4)", "Beta(2,4)", "Gamma(3,6)");
   meltdists = melt(dists, id.vars = x);
   colnames(meltdists) = c("x", "Distribution", "value")
-  plot = ggplot(data=meltdists, aes(x=x, y=value, color=Distribution))+geom_line()
-  plot = plot+xlim(0,1)+ylim(0,5)
-  plot+xlab("X-Value")+ylab("Probability")+ggtitle("Density Plots of Various Probability Distributions\n")
+  ggplot(data=meltdists, aes(x=x, y=value, color=Distribution))+geom_line()+xlim(0,1)+ylim(0,5)+xlab("X-Value")+ylab("Probability")+ggtitle("Density Plots of Various Probability Distributions\n")
 @
 \newpage
 \section*{Problem 2}
-<<>>==
+\subsection*{Overview of the Data Structure}
+<<tidy=TRUE>>==
+  #Added an id column for use in later melting
+  mpg["id"] = rownames(mpg)
   head(mpg)
   str(mpg)
-  mpg["id"] = rownames(mpg)
 @
 \newpage
-<<out.width="4in", out.height="4in">>==
- mileageplot=ggplot(data=mpg, aes(x=cty, y=hwy))
- mileageplot=mileageplot+geom_point()+geom_smooth(method = lm)
- mileageplot = mileageplot+xlab("City Mileage")+ylab("Highway Mileage")
- mileageplot+ggtitle("Highway Mileage Corresponds well with City Mileage")
-@
-\newpage
-<<out.width="4in", out.height="4in">>==
-  par(mfrow=2)
+\subsection*{Fig 1: Distribution of All MPG Ratings}
+<<tidy=TRUE, fig.width=16, fig.height=8, out.width="8in", out.height="4in">>==
   plotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="id")
-  ggplot(plotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)
-  ggplot(plotdat)+geom_histogram(aes(x=value, fill=variable, alpha=.6))
+  a = ggplot(data=mpg, aes(y=cty, x=hwy))+xlim(7,50)+ylim(7,50)+geom_point()+geom_smooth(method = lm)+xlab("City Mileage")+ylab("Highway Mileage\n")+ggtitle("Highway Mileage Corresponds well with City Mileage\n")
+  b = ggplot(plotdat)+geom_histogram(aes(x=value, fill=variable), position = "identity", alpha = .5)+ggtitle("Distribution of MPG Ratings for All Vehicles\n")+xlab("MPG")+ylab("Count\n")+scale_fill_discrete(name="MPG Conditions")
+  c = ggplot(plotdat)+geom_boxplot(aes(x= variable, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+ggtitle("Highway Mileage was Higher on Average than City Mileage\n")
+  d = ggplot(plotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)+ggtitle("Distributions of Mileage Vary (Bimodal & Unimodal)\n")+xlab("MPG")+ylab("Count\n")
+  grid.newpage()
+  pushViewport(viewport(layout=grid.layout(2, 2)))
+  print(a, vp = viewport(layout.pos.row=1, layout.pos.col=1))
+  print(b, vp = viewport(layout.pos.row=1, layout.pos.col=2))
+  print(c, vp = viewport(layout.pos.row=2, layout.pos.col=1))
+  print(d, vp = viewport(layout.pos.row=2, layout.pos.col=2))
+@
+\newpage
+\subsection*{Fig 2: Distribution of All MPG Ratings Per Other Factors}
+<<tidy=TRUE, fig.width=16, fig.height=8, out.width="8in", out.height="4in">>==
+    plotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class"))
+    ggplot(plotdat)+geom_boxplot(aes(x=reorder(manufacturer, value, FUN=median), y=value))+facet_grid(.~variable)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("Top MPG Ratings By Manufacturer")
 @
 \end{document}
