@@ -33,24 +33,32 @@
 <<tidy=TRUE>>==
   #Added an id column for use in later melting
   mpg["id"] = rownames(mpg)
+  mpg$cyl = as.factor(mpg$cyl)
   head(mpg)
   str(mpg)
 @
 \newpage
 \subsection*{Code Block 1: Distribution of All MPG Ratings}
 <<tidy=TRUE>>==
-  plotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="id")
   a = ggplot(data=mpg, aes(y=cty, x=hwy))+xlim(7,50)+ylim(7,50)+geom_point()+geom_smooth(method = lm)+xlab("City Mileage")+ylab("Highway Mileage\n")+ggtitle("Highway Mileage Corresponds well with City Mileage\n")
-  b = ggplot(plotdat)+geom_histogram(aes(x=value, fill=variable), position = "identity", alpha = .5)+ggtitle("Distribution of MPG Ratings for All Vehicles\n")+xlab("MPG")+ylab("Count\n")+scale_fill_discrete(name="MPG Conditions")
-  c = ggplot(plotdat)+geom_boxplot(aes(x= variable, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+ggtitle("Highway Mileage was Higher on Average than City Mileage\n")
-  d = ggplot(plotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)+ggtitle("Distributions of Mileage Vary (Bimodal & Unimodal)\n")+xlab("MPG")+ylab("Count\n")
-  plotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class", "cyl"))
-  e = ggplot(plotdat, aes(x=reorder(manufacturer, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("MPG Ratings By Manufacturer\n")
+  idplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="id")
+  b = ggplot(idplotdat)+geom_histogram(aes(x=value, fill=variable), position = "identity", alpha = .5)+ggtitle("Distribution of MPG Ratings for All Vehicles\n")+xlab("MPG")+ylab("Count\n")+scale_fill_discrete(name="MPG Conditions")
+  c = ggplot(idplotdat)+geom_boxplot(aes(x= variable, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+ggtitle("Highway Mileage was Higher on Average than City Mileage\n")
+  d = ggplot(idplotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)+ggtitle("Distributions of Mileage Vary (Bimodal & Unimodal)\n")+xlab("MPG")+ylab("Count\n")
+  catplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class", "cyl"))
+  e = ggplot(catplotdat, aes(x=reorder(manufacturer, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("MPG Ratings By Manufacturer\n")
 @
 \texttt{In Figure 1, we begin to examine the distribution of the two MPG variables (City and Highway).}
 \newpage
+\subsection*{Code Block 2: Distribution of All MPG Ratings Per Other Factors}
+<<tidy=TRUE>>==
+    f = ggplot(catplotdat, aes(x=reorder(cyl, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ggtitle("MPG Ratings By # of Cylinders\n")
+    g = ggplot(catplotdat, aes(x=reorder(class, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("\nClass")+ggtitle("MPG Ratings By Class\n")
+    h = ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("MPG Ratings By Class\n")
+@
+\newpage
 \subsection*{Figure 1: Distribution of All MPG Ratings}
-<<echo=FALSE, fig.width=16, fig.height=16, out.width="8in", out.height="8in", warning=FALSE>>==
+<<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
   grid.newpage()
   pushViewport(viewport(layout=grid.layout(3, 2)))
   suppressMessages(print(a, vp = viewport(layout.pos.row=1, layout.pos.col=1)))
@@ -60,14 +68,12 @@
   suppressMessages(print(e, vp = viewport(layout.pos.row=3, layout.pos.col=1:2)))
 @
 \newpage
-\subsection*{Fig 2: Distribution of All MPG Ratings Per Other Factors}
-<<tidy=TRUE, fig.width=16, fig.height=12, out.width="8in", out.height="6in">>==
-    a = ggplot(plotdat, aes(x=reorder(cyl, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ggtitle("MPG Ratings By # of Cylinders\n")
-    b = ggplot(plotdat, aes(x=reorder(class, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("\nClass")+ggtitle("MPG Ratings By Class\n")
+\subsection*{Figure 2: Distribution of All MPG Ratings Per Other Factors}
+<<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
     grid.newpage()
-    pushViewport(viewport(layout=grid.layout(2, 1)))
-    print(a, vp = viewport(layout.pos.row=1, layout.pos.col=1))
-    print(b, vp = viewport(layout.pos.row=2, layout.pos.col=1))
-
+    pushViewport(viewport(layout=grid.layout(4, 1)))
+    print(f, vp = viewport(layout.pos.row=1, layout.pos.col=1))
+    print(g, vp = viewport(layout.pos.row=2, layout.pos.col=1))
+    print(h, vp = viewport(layout.pos.row=3:4, layout.pos.col=1))
 @
 \end{document}
