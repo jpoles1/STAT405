@@ -42,34 +42,33 @@
   str(mpg)
 @
 \newpage
-\subsection*{Code Block 1: Distribution of All MPG Ratings}
+\subsection*{Code Block 1: Distribution of MPG Ratings}
 <<tidy=TRUE>>==
   idplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="id")
-  yearplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars ="year")
+  yearplotdat = melt(mpg[mpg["cyl"]==4, ], measure.vars=c("hwy", "cty"), id.vars ="year")
   displdata = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "displ"))
-
-  a = ggplot(data=mpg, aes(y=cty, x=hwy))+xlim(7,50)+ylim(7,50)+geom_point()+geom_smooth(method = lm)+xlab("City Mileage")+ylab("Highway Mileage\n")+ggtitle("Highway Mileage Corresponds well with City Mileage\n")
+  a = ggplot(data=mpg, aes(x=cty, y=hwy))+xlim(7,50)+ylim(7,50)+geom_point()+geom_smooth(method = lm)+geom_abline(intercept=0, slope=1, color="red")+xlab("City Mileage")+ylab("Highway Mileage\n")+ggtitle("Highway Mileage Corresponds well with City Mileage\n")
   b = ggplot(idplotdat)+geom_boxplot(aes(x= variable, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+ggtitle("Highway Mileage was Higher on Average than City Mileage\n")
-  c = ggplot(yearplotdat)+geom_boxplot(aes(x=year, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+facet_grid(.~variable)+ggtitle("Neither Highway Nor City Mileage Improved Significantly From 1999-2008\n")
-  d = ggplot(idplotdat)+geom_histogram(aes(x=value))+facet_grid(.~variable)+ggtitle("Distributions of Mileage Vary (Bimodal & Unimodal)\n")+xlab("MPG")+ylab("Count\n")
-  e = ggplot(displdata, aes(x=displ, y=value, color=variable))+geom_point()+geom_smooth(method="lm")
-
-  catplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class", "cyl"))
-
+  c = ggplot(yearplotdat)+geom_boxplot(aes(x=year, y=value))+xlab("Year")+ylab("MPG\n")+facet_grid(.~variable)+ggtitle("Neither Highway Nor City Mileage Improved Significantly From 1999-2008\n")
+  d = ggplot(displdata, aes(x=displ, y=value, color=variable))+geom_point()+geom_smooth(method="lm")+xlab("Engine Displacement")+ylab("MPG")+ggtitle("Engine Displacement is Directly Correlated to MPG Rating")
+  e =ggplot(mpg, aes(x=cyl, y=displ))+geom_boxplot()+xlab("# of Cylinders")+ylab("Engine Displacement")+ggtitle("Engine Displacement is Directly Correlated to MPG Rating")
+  #T-test to determine significance of 1999-2008 highway mileage difference
+  t.test(mpg$hwy[mpg["year"]==1999], mpg$hwy[mpg["year"]==2008], paired=F)
 @
-\texttt{In Figure 1, we begin to examine the distribution of the two MPG variables (City and Highway).}
+\texttt{In Figure 1, I began to examine the distribution of the two MPG variables (City and Highway).We may note from the first plot (a) in Figure 1, that there is a fairly strong, direct linear correlation between highway and city mileage for any given car. In all cases, the highway mileage was higher than city mileage. Indeed, we see confirmed in the second plot (b) of Figure 1, that on average highway is greater than city MPG ratings. In the third plot (c) of the figure, I wanted to continue my investigation of trends in MPG rating; I chose to examine the question of whether there were significant changes in average MPG rating over the course of the ten year period of study. Indeed, both plotting and t-testing revealed no overall improvement in MPG rating from 1999 to 2008. Finding no explanatory trend there, I decided to begin investigating the role of engine characteristics in MPG rating. In the final two plots (d & e)of this figure, I demonstrate the relationship direct, linear relationship between engine displacement and MPG rating; followed by the relationship between number of cylinders and displacement. This final plot leads us nicely into our subsequent figures.}
 \newpage
-\subsection*{Code Block 2: Distribution of All MPG Ratings Per Other Factors}
+\subsection*{Code Block 2: Which Manufacturers Have the Best Averge MPG Rating?}
 <<tidy=TRUE>>==
     catplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class", "cyl", "year"))
-    f = ggplot(catplotdat, aes(x=reorder(cyl, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ggtitle("MPG Ratings By # of Cylinders\n")
-    g = ggplot(catplotdat, aes(x=reorder(manufacturer, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("MPG Ratings By Manufacturer\n")
-    z = ggplot(catplotdat, aes(x=reorder(class, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("\nClass")+ggtitle("MPG Ratings By Class\n")
-    h= ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("MPG Ratings By Class\n")
+      f = ggplot(catplotdat, aes(x=reorder(manufacturer, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(variable~.)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("MPG Ratings By Manufacturer\n")
+
+    g = ggplot(catplotdat, aes(x=reorder(cyl, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ggtitle("MPG Ratings By # of Cylinders\n")
     h = ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("Popular # of Cylinders by Manufacturer\n")
+    #h= ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("MPG Ratings By Class\n")
+    #h = ggplot(mpg, aes(x=reorder(manufacturer, displ, FUN=mean), y=displ)) + geom_boxplot()+geom_jitter()
 @
 \newpage
-\subsection*{Figure 1: Distribution of All MPG Ratings}
+\subsection*{Figure 1: Distribution of MPG Ratings}
 <<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
   grid.newpage()
   pushViewport(viewport(layout=grid.layout(3, 2)))
@@ -80,12 +79,18 @@
   suppressMessages(print(e, vp = viewport(layout.pos.row=3, layout.pos.col=2)))
 @
 \newpage
-\subsection*{Figure 2: Distribution of All MPG Ratings Per Other Factors}
+\subsection*{Figure 2: Which Manufacturers Have the Best Averge MPG Rating?}
+<<echo=FALSE, fig.width=8, fig.height=9, out.width="8in", out.height="9in", warning=FALSE>>==
+    grid.newpage()
+    pushViewport(viewport(layout=grid.layout(1, 1)))
+    print(f, vp = viewport(layout.pos.row=1, layout.pos.col=1))
+@
+\newpage
+\subsection*{Figure 3: Relationship between Cylinders and MPG}
 <<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
     grid.newpage()
-    pushViewport(viewport(layout=grid.layout(4, 1)))
-    print(f, vp = viewport(layout.pos.row=1, layout.pos.col=1))
-    print(g, vp = viewport(layout.pos.row=2, layout.pos.col=1))
-    print(h, vp = viewport(layout.pos.row=3:4, layout.pos.col=1))
+    pushViewport(viewport(layout=grid.layout(2, 1)))
+    print(g, vp = viewport(layout.pos.row=1, layout.pos.col=1))
+    print(h, vp = viewport(layout.pos.row=2, layout.pos.col=1))
 @
 \end{document}
