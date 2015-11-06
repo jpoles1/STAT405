@@ -55,18 +55,20 @@
   #T-test to determine significance of 1999-2008 highway mileage difference
   t.test(mpg$hwy[mpg["year"]==1999], mpg$hwy[mpg["year"]==2008], paired=F)
 @
-\texttt{In Figure 1, I began to examine the distribution of the two MPG variables (City and Highway).We may note from the first plot (a) in Figure 1, that there is a fairly strong, direct linear correlation between highway and city mileage for any given car. In all cases, the highway mileage was higher than city mileage. Indeed, we see confirmed in the second plot (b) of Figure 1, that on average highway is greater than city MPG ratings. In the third plot (c) of the figure, I wanted to continue my investigation of trends in MPG rating; I chose to examine the question of whether there were significant changes in average MPG rating over the course of the ten year period of study. Indeed, both plotting and t-testing revealed no overall improvement in MPG rating from 1999 to 2008. Finding no explanatory trend there, I decided to begin investigating the role of engine characteristics in MPG rating. In the final two plots (d & e)of this figure, I demonstrate the relationship direct, linear relationship between engine displacement and MPG rating; followed by the relationship between number of cylinders and displacement. This final plot leads us nicely into our subsequent figures.}
+In Figure 1, I began to examine the distribution of the two MPG variables (City and Highway).We may note from the first plot (a) in Figure 1, that there is a fairly strong, direct linear correlation between highway and city mileage for any given car. In all cases, the highway mileage was higher than city mileage. Indeed, we see confirmed in the second plot (b) of Figure 1, that on average highway is greater than city MPG ratings. In the third plot (c) of the figure, I wanted to continue my investigation of trends in MPG rating; I chose to examine the question of whether there were significant changes in average MPG rating over the course of the ten year period of study. Indeed, both plotting and t-testing revealed no overall improvement in MPG rating from 1999 to 2008. Finding no explanatory trend there, I decided to begin investigating the role of engine characteristics in MPG rating. In the final two plots (d & e)of this figure, I demonstrate the relationship direct, linear relationship between engine displacement and MPG rating; followed by the relationship between number of cylinders and displacement. This final plot leads us nicely into our subsequent figures.
 \newpage
 \subsection*{Code Block 2: Which Manufacturers Have the Best Averge MPG Rating?}
 <<tidy=TRUE>>==
     catplotdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "manufacturer", "class", "cyl", "year"))
       f = ggplot(catplotdat, aes(x=reorder(manufacturer, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(variable~.)+theme(axis.text.x = element_text(angle=90))+xlab("Manufacturer")+ggtitle("MPG Ratings By Manufacturer\n")
-
-    g = ggplot(catplotdat, aes(x=reorder(cyl, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ggtitle("MPG Ratings By # of Cylinders\n")
-    h = ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("Popular # of Cylinders by Manufacturer\n")
-    #h= ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\nClass")+facet_wrap(~manufacturer, ncol=3)+ggtitle("MPG Ratings By Class\n")
-    #h = ggplot(mpg, aes(x=reorder(manufacturer, displ, FUN=mean), y=displ)) + geom_boxplot()+geom_jitter()
 @
+In figure two, we wanted to see which manufacturers produced the highest efficiency cars on average. Overall, the average Honda car had the best MPG rating for both city and highway, trailed by Volkswagen. Notably, the most efficient cars in this dataset were manufactured by Volkswagen. On the other side, manufacturers like Land Rover and Lincoln had the worst performance.}
+\subsection*{Code Block 3: Relationship between Cylinders and MPG}
+<<>>=
+  g = ggplot(catplotdat, aes(x=cyl, y=value))+geom_boxplot()+geom_jitter(size=1)+facet_grid(.~variable)+xlab("# Cylinders")+ylab("MPG")+ggtitle("MPG Ratings By # of Cylinders\n")
+  h = ggplot(mpg)+geom_histogram(aes(x=cyl), stat="bin")+xlab("\n# of Cylinders")+ylab("Count\n")+facet_wrap(~manufacturer, ncol=3)+ggtitle("Popular # of Cylinders by Manufacturer\n")
+@
+In an effort to explain the differences in MPG efficiencies found across manufacturers, I examined a categorical variable (number of cylinders) which was closely related to displacement (a variable shown to explain a lot of variation in MPG). The first plot (g) shows that the cylinder varible also explains a lot of the variation in MPG. As the number of cylinders increased, MPG decreased.  The second plot (h) sheds light on the variation of MPG across manufacturers. The top manufacturers more frequently produced cars with low # of cylinders (4) while the worst produced cars with a high number of cylinders (8).
 \newpage
 \subsection*{Figure 1: Distribution of MPG Ratings}
 <<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
@@ -87,10 +89,22 @@
 @
 \newpage
 \subsection*{Figure 3: Relationship between Cylinders and MPG}
-<<echo=FALSE, fig.width=16, fig.height=18, out.width="8in", out.height="9in", warning=FALSE>>==
+<<echo=FALSE, fig.width=12, fig.height=13.5, out.width="8in", out.height="9in", warning=FALSE>>==
     grid.newpage()
     pushViewport(viewport(layout=grid.layout(2, 1)))
     print(g, vp = viewport(layout.pos.row=1, layout.pos.col=1))
     print(h, vp = viewport(layout.pos.row=2, layout.pos.col=1))
+@
+\newpage
+\section*{Problem 3}
+<<tidy=TRUE, fig.width=12, fig.height=9, out.width="8in", out.height="6in">>==
+  str(diamonds)
+  ggplot(diamonds, aes(x=carat, y=price))+geom_point(alpha=.2)+geom_smooth(method="lm", color="red")+facet_wrap("clarity")+ylab("Price\n")+xlab("Carat")
+@
+\newpage
+\section*{Problem 4}
+<<tidy=TRUE, fig.width=8, fig.height=6, out.width="8in", out.height="6in">>==
+  drvdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "drv"))
+  ggplot(drvdat, aes(x=reorder(drv, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(alpha=.5)+geom_smooth(method="lm", color="red")+facet_wrap("variable")+ylab("MPG")+xlab("Drive")
 @
 \end{document}
