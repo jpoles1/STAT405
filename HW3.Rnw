@@ -5,6 +5,7 @@
 \title{STAT 405 HW 3}
 \author{Jordan Poles}
 \maketitle
+\make
 %\SweaveOpts{concordance=FALSE}
 <<init, echo=FALSE>>==
   library(ggplot2);
@@ -13,7 +14,7 @@
   options(warn=-1)
 @
 \section*{Problem 1}
-<<tidy=TRUE, fig.width=12, fig.height=8, out.width="6in", out.height="4in">>==
+<<tidy=TRUE, fig.width=8, fig.height=5, out.width="8in", out.height="5in">>==
   x = seq(0, 1, length.out = 300)
   dists = data.frame(
     x=x, 
@@ -50,8 +51,8 @@
   a = ggplot(data=mpg, aes(x=cty, y=hwy))+xlim(7,50)+ylim(7,50)+geom_point()+geom_smooth(method = lm)+geom_abline(intercept=0, slope=1, color="red")+xlab("City Mileage")+ylab("Highway Mileage\n")+ggtitle("Highway Mileage Corresponds well with City Mileage\n")
   b = ggplot(idplotdat)+geom_boxplot(aes(x= variable, y=value))+xlab("MPG Conditions")+ylab("MPG\n")+ggtitle("Highway Mileage was Higher on Average than City Mileage\n")
   c = ggplot(yearplotdat)+geom_boxplot(aes(x=year, y=value))+xlab("Year")+ylab("MPG\n")+facet_grid(.~variable)+ggtitle("Neither Highway Nor City Mileage Improved Significantly From 1999-2008\n")
-  d = ggplot(displdata, aes(x=displ, y=value, color=variable))+geom_point()+geom_smooth(method="lm")+xlab("\nEngine Displacement")+ylab("MPG")+ggtitle("Engine Displacement is Directly Correlated to MPG Rating\n")
-  e =ggplot(mpg, aes(x=cyl, y=displ))+geom_boxplot()+xlab("\n# of Cylinders")+ylab("Engine Displacement\n")+ggtitle("Engine Displacement is Directly Correlated to MPG Rating\n")
+  d = ggplot(displdata, aes(x=displ, y=value, color=variable))+geom_point()+geom_smooth(method="lm")+xlab("\nEngine Displacement")+ylab("MPG")+ggtitle("Engine Displacement is Inversely Related to MPG Rating\n")
+  e =ggplot(mpg, aes(x=cyl, y=displ))+geom_boxplot()+xlab("\n# of Cylinders")+ylab("Engine Displacement\n")+ggtitle("Engine Displacement is Directly Correlated to # of Cylinders\n")
   #T-test to determine significance of 1999-2008 highway mileage difference
   t.test(mpg$hwy[mpg["year"]==1999], mpg$hwy[mpg["year"]==2008], paired=F)
 @
@@ -99,6 +100,6 @@ In an effort to explain the differences in MPG efficiencies found across manufac
 \section*{Problem 4}
 <<tidy=TRUE, fig.width=8, fig.height=6, out.width="8in", out.height="6in">>==
   drvdat = melt(mpg, measure.vars=c("hwy", "cty"), id.vars =c("id", "drv"))
-  ggplot(drvdat, aes(x=reorder(drv, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(alpha=.5)+facet_wrap("variable")+ylab("MPG")+xlab("Drive")+ggtitle("Drive Influences both Highway and City MPG Rating\n")
+  ggplot(drvdat, aes(x=reorder(drv, value, FUN=mean), y=value))+geom_boxplot()+geom_jitter(alpha=.5)+facet_wrap("variable")+ylab("MPG")+xlab("Drive")+ggtitle("Drive Directly Relates to both Highway and City MPG Rating\n")
 @
 \end{document}
